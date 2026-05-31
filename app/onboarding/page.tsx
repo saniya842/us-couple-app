@@ -2,12 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { useUser } from "@clerk/nextjs"
-import { useRouter } from "next/navigation"
 
 export default function OnboardingPage() {
   const { user, isLoaded } = useUser()
-  const router = useRouter()
-  const [step, setStep] = useState<"choice" | "done">("choice")
+  const [step, setStep] = useState<"loading" | "choice" | "done">("loading")
   const [inviteCode, setInviteCode] = useState("")
   const [coupleName, setCoupleName] = useState("")
   const [anniversary, setAnniversary] = useState("")
@@ -16,7 +14,20 @@ export default function OnboardingPage() {
   const [error, setError] = useState("")
 
   useEffect(() => {
-    if (isLoaded && !user) router.push("/sign-in")
+    if (!isLoaded) return
+    if (!user) { window.location.href = "/sign-in"; return }
+
+    // Check if user already has a couple
+    fetch("/api/couple?userId=" + user.id)
+      .then(r => r.json())
+      .then(d => {
+        if (d.couple) {
+          window.location.href = "/dashboard"
+        } else {
+          setStep("choice")
+        }
+      })
+      .catch(() => setStep("choice"))
   }, [isLoaded, user])
 
   const generateCode = () =>
@@ -26,9 +37,7 @@ export default function OnboardingPage() {
     if (!user) return
     setLoading(true)
     setError("")
-
     const code = generateCode()
-
     try {
       const res = await fetch("/api/couple", {
         method: "POST",
@@ -41,17 +50,13 @@ export default function OnboardingPage() {
           anniversary_date: anniversary || null,
         }),
       })
-
       const data = await res.json()
-
       if (!res.ok) throw new Error(data.error || "Failed")
-
       setGeneratedCode(code)
       setStep("done")
     } catch (err: any) {
       setError(err.message || "Something went wrong!")
     }
-
     setLoading(false)
   }
 
@@ -59,7 +64,6 @@ export default function OnboardingPage() {
     if (!user || !inviteCode) return
     setLoading(true)
     setError("")
-
     try {
       const res = await fetch("/api/couple", {
         method: "POST",
@@ -70,19 +74,16 @@ export default function OnboardingPage() {
           invite_code: inviteCode.toUpperCase(),
         }),
       })
-
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || "Invalid code!")
-
-      router.push("/dashboard")
+      window.location.href = "/dashboard"
     } catch (err: any) {
       setError(err.message || "Something went wrong!")
     }
-
     setLoading(false)
   }
 
-  if (!isLoaded) return (
+  if (step === "loading") return (
     <div className="min-h-screen bg-rose-50 flex items-center justify-center">
       <p className="text-rose-400 animate-pulse">Loading... 💕</p>
     </div>
@@ -106,14 +107,12 @@ export default function OnboardingPage() {
                   placeholder="e.g. Sam & Alex 💕"
                   value={coupleName}
                   onChange={(e) => setCoupleName(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:border-rose-300"
                 />
               </div>
-
               <div>
                 <label className="text-sm text-gray-500 mb-1 block font-medium">
-                  Anniversary / First date
-                  <span className="text-gray-300 ml-1">(optional)</span>
+                  Anniversary / First date <span className="text-gray-300">(optional)</span>
                 </label>
                 <input
                   type="date"
@@ -132,9 +131,9 @@ export default function OnboardingPage() {
               <button
                 onClick={handleCreateCouple}
                 disabled={loading}
-                className="w-full bg-rose-500 hover:bg-rose-600 disabled:opacity-70 text-white py-3 rounded-xl font-semibold transition-all shadow-sm"
+                className="w-full bg-rose-500 hover:bg-rose-600 disabled:opacity-70 text-white py-3 rounded-xl font-semibold transition-all"
               >
-                {loading ? "Creating your space..." : "Create Our Space 💕"}
+                {loading ? "Creating..." : "Create Our Space 💕"}
               </button>
 
               <div className="flex items-center gap-3 py-2">
@@ -150,7 +149,6 @@ export default function OnboardingPage() {
                 onChange={(e) => setInviteCode(e.target.value)}
                 className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:border-rose-300 uppercase tracking-widest"
               />
-
               <button
                 onClick={handleJoinCouple}
                 disabled={loading || !inviteCode}
@@ -167,21 +165,17 @@ export default function OnboardingPage() {
             <div className="text-5xl mb-4">🎉</div>
             <h1 className="text-2xl font-bold text-gray-800 mb-2">Your space is ready!</h1>
             <p className="text-gray-400 mb-6">Share this code with your partner</p>
-
             <div className="bg-rose-50 border-2 border-dashed border-rose-200 rounded-2xl p-6 mb-6">
               <p className="text-sm text-gray-400 mb-2">Invite Code</p>
               <p className="text-4xl font-bold text-rose-500 tracking-widest">{generatedCode}</p>
             </div>
-
-            <p className="text-gray-400 text-sm mb-6">
-              Ask your partner to enter this code when they sign up!
-            </p>
-
-            <a href="/dashboard" className="w-full block">
-             <button className="w-full bg-rose-500 hover:bg-rose-600 text-white py-3 rounded-xl font-semibold transition-all">
-               Go to Dashboard →
-             </button>
-            </a>
+            <p className="text-gray-400 text-sm mb-6">Ask your partner to enter this code when they sign up!</p>
+            <button
+              onClick={() => { window.location.href = "/dashboard" }}
+              className="w-full bg-rose-500 hover:bg-rose-600 text-white py-3 rounded-xl font-semibold transition-all"
+            >
+              Go to Dashboard →
+            </button>
           </div>
         )}
 

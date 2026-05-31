@@ -29,7 +29,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!isLoaded) return
-    if (!user) { router.push("/sign-in"); return }
+    if (!user) { window.location.href = "/sign-in"; return }
     if (mountedRef.current) return
     mountedRef.current = true
     fetchData()
@@ -41,7 +41,7 @@ export default function Dashboard() {
       const d1 = await r1.json()
 
       if (!d1.couple) {
-        router.push("/onboarding")
+        window.location.href = "/onboarding"
         return
       }
 
