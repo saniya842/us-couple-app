@@ -20,16 +20,16 @@ export default function LandingPage() {
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/sign-up">
+          <a href="/sign-up">
             <button className="bg-rose-500 hover:bg-rose-600 text-white px-8 py-3 rounded-full text-lg font-semibold transition-all shadow-lg hover:shadow-xl">
               Get Started 💕
             </button>
-          </Link>
-          <Link href="/sign-in">
+          </a>
+          <a href="/sign-in">
             <button className="border-2 border-rose-300 text-rose-500 hover:bg-rose-50 px-8 py-3 rounded-full text-lg font-semibold transition-all">
               Sign In
             </button>
-          </Link>
+          </a>
         </div>
       </div>
 
