@@ -177,12 +177,11 @@ export default function OnboardingPage() {
               Ask your partner to enter this code when they sign up!
             </p>
 
-            <button
-              onClick={() => router.push("/dashboard")}
-              className="w-full bg-rose-500 hover:bg-rose-600 text-white py-3 rounded-xl font-semibold transition-all"
-            >
-              Go to Dashboard →
-            </button>
+            <a href="/dashboard" className="w-full block">
+             <button className="w-full bg-rose-500 hover:bg-rose-600 text-white py-3 rounded-xl font-semibold transition-all">
+               Go to Dashboard →
+             </button>
+            </a>
           </div>
         )}
 

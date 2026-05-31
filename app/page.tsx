@@ -35,27 +35,25 @@ export default function LandingPage() {
 
       {/* Features Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 max-w-3xl mx-auto">
-        {[
-          { emoji: "📖", title: "Journal", desc: "Shared memories" },
-          { emoji: "💘", title: "Quiz", desc: "Compatibility" },
-          { emoji: "🌙", title: "Date Night", desc: "Plan together" },
-          { emoji: "🎯", title: "Milestones", desc: "Track journey" },
-          { emoji: "💬", title: "Private Chat", desc: "Just you two" },
-          { emoji: "🌈", title: "Mood", desc: "Daily check-in" },
-          { emoji: "💌", title: "Love Notes", desc: "Surprise notes" },
-          { emoji: "🔥", title: "Streaks", desc: "Stay connected" },
-        ].map((feature) => (
-          <div
-            key={feature.title}
-            className="bg-white rounded-2xl p-4 text-center shadow-sm hover:shadow-md transition-all"
-          >
-            <div className="text-3xl mb-2">{feature.emoji}</div>
-            <div className="font-semibold text-gray-700 text-sm">{feature.title}</div>
-            <div className="text-gray-400 text-xs">{feature.desc}</div>
-          </div>
-        ))}
-      </div>
-
+      {[
+        { emoji: "📖", title: "Journal", desc: "Shared memories" },
+        { emoji: "💘", title: "Quiz", desc: "Compatibility" },
+        { emoji: "🌙", title: "Date Night", desc: "Plan together" },
+        { emoji: "🎯", title: "Milestones", desc: "Track journey" },
+        { emoji: "💬", title: "Private Chat", desc: "Just you two" },
+        { emoji: "🌈", title: "Mood", desc: "Daily check-in" },
+        { emoji: "💌", title: "Love Notes", desc: "Surprise notes" },
+        { emoji: "🔥", title: "Streaks", desc: "Stay connected" },
+       ].map((feature) => (
+        <div
+          key={feature.title}
+          className="bg-white rounded-2xl p-4 text-center shadow-sm">
+          <div className="text-3xl mb-2">{feature.emoji}</div>
+          <div className="font-semibold text-gray-700 text-sm">{feature.title}</div>
+          <div className="text-gray-400 text-xs">{feature.desc}</div>
+        </div>
+     ))}
+    </div>
       <p className="text-gray-300 text-sm mt-12">Made with ❤️ for couples</p>
     </main>
   )
